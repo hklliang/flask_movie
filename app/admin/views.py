@@ -1,14 +1,18 @@
 from . import admin
 from flask import render_template,redirect,url_for
+from app.admin.fomrs import LoginForm
 #引用的是__init__.py里面的admin
 
 @admin.route("/")
 def index():
     return render_template('admin/index.html')
 
-@admin.route("/login/")
+@admin.route("/login/",methods=['GET','POST'])
 def login():
-    return render_template('admin/login.html')
+    form=LoginForm()
+    if form.validate_on_submit():
+        data=form.data
+    return render_template('admin/login.html',form=form)
 
 
 @admin.route("/logout/")
