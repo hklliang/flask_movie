@@ -1,7 +1,19 @@
-
 from datetime import datetime
+from werkzeug.security import generate_password_hash
+import sys
+
+sys.path.append("..")
 from app import db
 
+
+# from flask import Flask
+# from flask_sqlalchemy import SQLAlchemy
+# app=Flask(__name__)
+# app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:123456@127.0.0.1:3306/movie"
+# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+#
+#
+# db = SQLAlchemy(app)
 
 # 会员
 class User(db.Model):
@@ -21,9 +33,6 @@ class User(db.Model):
 
     def __repr__(self):
         return "<User %r>" % self.name
-
-
-
 
 
 class Tag(db.Model):
@@ -83,7 +92,7 @@ class Comment(db.Model):
     addtime = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def __repr__(self):
-        return "<Preview %r>" % self.title
+        return "<Comment %r>" % self.title
 
 
 class Moviecol(db.Model):
@@ -123,6 +132,8 @@ class Role(db.Model):
         return "<Role %r>" % self.name
 
 
+
+
 class Admin(db.Model):
     __tablename__ = "admin"
     id = db.Column(db.Integer, primary_key=True)
@@ -137,6 +148,11 @@ class Admin(db.Model):
     def __repr__(self):
         return "<Admin %r>" % self.name
 
+    def check_pwd(self, pwd):
+        from werkzeug.security import check_password_hash
+        return check_password_hash(self.pwd, pwd)
+
+
 class Userlog(db.Model):
     __tablename__ = "user_log"
     id = db.Column(db.Integer, primary_key=True)
@@ -147,6 +163,7 @@ class Userlog(db.Model):
     def __repr__(self):
         return "<Userlog %r>" % self.id
 
+
 class Adminlog(db.Model):
     __tablename__ = "adminlog"
     id = db.Column(db.Integer, primary_key=True)
@@ -155,7 +172,8 @@ class Adminlog(db.Model):
     addtime = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def __repr__(self):
-        return "<Oplog %r>" % self.id
+        return "<Adminlog %r>" % self.id
+
 
 class Oplog(db.Model):
     __tablename__ = "oplog"
@@ -169,5 +187,19 @@ class Oplog(db.Model):
         return "<Oplog %r>" % self.id
 
 
+
 if __name__ == '__main__':
     db.create_all()
+    role = Role(
+        name="admin",
+        auths='is_admin'
+    )
+    admin = Admin(
+        name="imoocmovie",
+        pwd=generate_password_hash("imoocmovie"),
+        is_super=0,
+        role_id=1
+    )
+    db.session.add(role)
+    db.session.add(admin)
+    db.session.commit()
