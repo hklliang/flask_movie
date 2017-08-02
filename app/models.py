@@ -1,8 +1,8 @@
 from datetime import datetime
 from werkzeug.security import generate_password_hash
-import sys
+# import sys
 
-sys.path.append("..")
+# sys.path.append("..")
 from app import db
 
 
@@ -11,8 +11,8 @@ from app import db
 # app=Flask(__name__)
 # app.config['SQLALCHEMY_DATABASE_URI'] = "mysql+pymysql://root:123456@127.0.0.1:3306/movie"
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
-#
-#
+
+
 # db = SQLAlchemy(app)
 
 # 会员
@@ -196,7 +196,7 @@ if __name__ == '__main__':
     )
     admin = Admin(
         name="imoocmovie",
-        pwd=generate_password_hash("imoocmovie"),
+        pwd=generate_password_hash("aa"),
         is_super=0,
         role_id=1
     )
