@@ -5,7 +5,7 @@ from app.models import Admin, Tag, Movie
 from functools import wraps
 from app import db, app
 from werkzeug.utils import secure_filename
-import os, uuid, datetime
+import os, uuid, datetime,stat
 
 
 def admin_login_req(f):
@@ -146,7 +146,7 @@ def movie_add():
         file_logo = secure_filename(form.logo.data.filename)
         if not os.path.exists(app.config['UP_DIR']):
             os.makedirs(app.config['UP_DIR'])
-            os.chmod(app.config['UP_DIR'], 'rw')
+            os.chmod(app.config['UP_DIR'], stat.S_IRWXU)
         url = change_filename(file_url)
         logo = change_filename(file_logo)
 
@@ -194,6 +194,29 @@ def movie_del(id=None,page=None):
     db.session.commit()
     flash('删除电影成功！', 'ok')
     return redirect(url_for('admin.movie_list',page=page or 1))
+
+@admin.route("/movie/edit/<int:id>/<int:page>/", methods=['GET', 'POST'])
+@admin_login_req
+def movie_edit(id,page=None):
+    form = MovieForm()
+    movie = Movie.query.get_or_404(int(id))
+
+
+    if form.validate_on_submit():
+        data = form.data
+        movie_count=Movie.query.filter_by(name=data['title']).count()
+        movie.name=data['name']
+        if movie_count==1:
+            flash('名称已经存在！', 'err')
+            return render_template('admin/movie_edit.html', form=form,movie=movie)
+        form.title = data['title']
+
+        db.session.add(movie)
+        db.session.commit()
+        flash('修改电影成功！', 'ok')
+        return redirect(url_for('admin.movie_list',page=page or 1))
+
+    return render_template('admin/movie_edit.html',form=form,movie=movie)
 
 
 @admin.route("/preview/add/")
