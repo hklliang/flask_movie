@@ -207,6 +207,11 @@ class PreviewForm(FlaskForm):
             DataRequired('请上传预告封面')
         ],
         description='预告封面',
+        render_kw=dict(
+            onchange="preview(this)"
+
+
+        ),
 
     )
     submit = SubmitField(

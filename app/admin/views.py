@@ -1,7 +1,7 @@
 from . import admin
 from flask import render_template, redirect, url_for, flash, session, request
 from app.admin.fomrs import LoginForm, TagForm, MovieForm, PreviewForm
-from app.models import Admin, Tag, Movie, Preview
+from app.models import Admin, Tag, Movie, Preview,User
 from functools import wraps
 from app import db, app
 from werkzeug.utils import secure_filename
@@ -346,18 +346,32 @@ def preview_edit(id, page=None):
 def user_list(page=None):
     if page is None:
         page = 1
-    page_data = Tag.query.order_by(
-        Tag.addtime.desc()
-    ).paginate(page=page, per_page=10)
+    page_data = User.query.order_by(
+        User.addtime.desc()
+    ).paginate(page=page, per_page=10, error_out=False)
 
-    return render_template('admin/user_list.html', page_data=page_data)
+    # 没有数据的时候返回第一页
+    if page == 1:
+        return render_template('admin/user_list.html', page_data=page_data)
+    elif not page_data.items:
+        return redirect(url_for('admin.user_list', page=1))
 
 
-
-@admin.route("/user/view/")
+@admin.route("/user/list/<int:id>/<int:page>", methods=['GET'])
 @admin_login_req
-def user_view():
-    return render_template('admin/user_view.html')
+def user_del(id=None, page=None):
+    user = User.query.get_or_404(int(id))
+    db.session.delete(user)
+    db.session.commit()
+    flash('删除用户成功！', 'ok')
+    return redirect(url_for('admin.user_list', page=page))
+
+@admin.route("/user/view/<int:id>/",methods=['GET'])
+@admin_login_req
+def user_view(id=None):
+    user=User.query.get_or_404(int(id))
+
+    return render_template('admin/user_view.html',user=user)
 
 
 @admin.route("/comment/list/")
