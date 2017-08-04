@@ -208,10 +208,18 @@ def preview_list():
     return render_template('admin/preview_list.html')
 
 
-@admin.route("/user/list/")
+
+@admin.route("/user/list/<int:page>", methods=['GET'])
 @admin_login_req
-def user_list():
-    return render_template('admin/user_list.html')
+def user_list(page=None):
+    if page is None:
+        page = 1
+    page_data = Tag.query.order_by(
+        Tag.addtime.desc()
+    ).paginate(page=page, per_page=10)
+
+    return render_template('admin/user_list.html', page_data=page_data)
+
 
 
 @admin.route("/user/view/")
