@@ -12,7 +12,7 @@
             <div class="col-md-12">
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h3 class="box-title">添加预告</h3>
+                        <h3 class="box-title">修改预告</h3>
                     </div>
                     <form role="form" method="post" enctype="multipart/form-data">
                         <div class="box-body">
@@ -49,7 +49,7 @@
                                         <span style="color:red">{{ err }}</span>
                                     </div>
                                 {% endfor %}
-                                <img data-src="holder.js/700x320" style="margin-top:5px;" class="img-responsive"
+                                <img src="{{ url_for('static',filename='uploads/'+preview.logo) }}" style="margin-top:5px;" class="img-responsive"
                                      alt="">
                             </div>
                         </div>
