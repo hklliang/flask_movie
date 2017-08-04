@@ -96,7 +96,7 @@ class MovieForm(FlaskForm):
     info = TextAreaField(
         label="简介",
         validators=[
-            DataRequired('请输入标签！')
+            DataRequired('请输入简介！')
         ],
         description='片名',
         render_kw=dict(
@@ -177,6 +177,36 @@ class MovieForm(FlaskForm):
             id='input_release_time'
         ),
 
+
+    )
+    submit = SubmitField(
+        label="保存",
+        render_kw={
+            "class": "btn btn-primary",
+        }
+    )
+
+
+class PreviewForm(FlaskForm):
+    title = StringField(
+        label="预告标题",
+        validators=[
+            DataRequired('请输入预告标题！')
+        ],
+        description='预告标题',
+        render_kw=dict(
+            class_="form-control",
+            placeholder="请输入预告标题！",
+
+        ),
+
+    )
+    logo = FileField(#会生成type='file'
+        label="预告封面",
+        validators=[
+            DataRequired('请上传预告封面')
+        ],
+        description='预告封面',
 
     )
     submit = SubmitField(

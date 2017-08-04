@@ -55,7 +55,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="input_info">{{ form.info.label }}</label>
-                                {{ form.info(value=movie.info) }}
+                                {{ form.info }}
                                  {% for err in form.info.errors %}
                                     <div class="col-md-12">
                                         <span style="color:red">{{ err }}</span>
@@ -75,7 +75,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="input_star">{{ form.star.label }}</label>
-                                {{ form.star(value=movie.star)  }}
+                                {{ form.star  }}
                                  {% for err in form.star.errors %}
                                     <div class="col-md-12">
                                         <span style="color:red">{{ err }}</span>
