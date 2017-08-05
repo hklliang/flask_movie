@@ -98,7 +98,6 @@ class Comment(db.Model):
 class Moviecol(db.Model):
     __tablename__ = "moviecol"
     id = db.Column(db.Integer, primary_key=True)
-    content = db.Column(db.TEXT)
     movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
@@ -148,6 +147,7 @@ class Admin(db.Model):
     def __repr__(self):
         return "<Admin %r>" % self.name
 
+    #传进来一个密码，和数据库中的pwhash做比较
     def check_pwd(self, pwd):
         from werkzeug.security import check_password_hash
         return check_password_hash(self.pwd, pwd)
