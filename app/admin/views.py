@@ -26,7 +26,7 @@ def admin_login_req(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if 'admin' not in session:
-            return redirect(url_for('admin.login', next=request.url))  # 记录要进入的地址参数
+            return redirect(url_for('admin.login', next=request.url))  # 记录要进入的地址参数，next变成url参数了
         return f(*args, **kwargs)
 
     return decorated_function

@@ -2,7 +2,7 @@ from . import home
 from flask import render_template, redirect, url_for, flash, session, request
 from functools import wraps
 from app.home.forms import RegisterForm, LoginForm, UserdetailForm, PwdForm
-from app.models import User, Userlog,Preview
+from app.models import User, Userlog, Preview, Tag, Movie
 from werkzeug.security import generate_password_hash
 import uuid, os, datetime, stat
 from werkzeug.utils import secure_filename
@@ -31,9 +31,48 @@ def user_login_req(f):
     return decorated_function
 
 
-@home.route("/")
-def index():
-    return render_template("home/index.html")
+@home.route("/<int:page>", methods=['GET'])
+def index(page=None):
+    tags = Tag.query.all()
+    page_data = Movie.query
+
+    tid = request.args.get('tid', 0)
+    if int(tid) != 0:
+        page_data = page_data.filter_by(tag_id=int(tid))
+
+    star = request.args.get('star', 0)
+    if int(star) != 0:
+        page_data = page_data.filter_by(star=int(star))
+
+    time = request.args.get('time', 0)
+    if int(time) == 0:
+        page_data = page_data.order_by(Movie.addtime.desc())
+    else:
+        page_data = page_data.order_by(Movie.addtime.asc())
+
+    cm = request.args.get('cm', 0)
+    if int(cm) == 0:
+        page_data = page_data.order_by(Movie.playnum.desc())
+    else:
+        page_data = page_data.order_by(Movie.playnum.asc())
+
+    pm = request.args.get('pm', 0)
+    if int(pm) == 0:
+        page_data = page_data.order_by(Movie.commentnum.desc())
+    else:
+        page_data = page_data.order_by(Movie.commentnum.asc())
+
+    if page is None:
+        page = 1
+    page_data = page_data.paginate(page=page, per_page=10)
+    p = dict(
+        tid=tid,
+        star=star,
+        time=time,
+        pm=pm,
+        cm=cm,
+    )
+    return render_template("home/index.html", tags=tags, p=p, page_data=page_data)
 
 
 @home.route('/login/', methods=['GET', 'POST'])
@@ -187,15 +226,29 @@ def moviecol():
 
 @home.route('/animation/')
 def animation():
-    data=Preview.query.all()
-    return render_template('home/animation.html',data=data)
+    data = Preview.query.all()
+    return render_template('home/animation.html', data=data)
 
 
-@home.route('/search/')
-def search():
-    return render_template('home/search.html')
+# 搜索
+@home.route('/search/<int:page>/')
+def search(page=None):
+    if page is None:
+        page = 1
+    key = request.args.get('key', '')
+    data= Movie.query.filter(Movie.title.ilike('%' + key + '%')).order_by(
+        Movie.addtime.desc()
+    )
+    page_data = data.paginate(page=page, per_page=10, error_out=False)
+    data_count=data.count()
+
+    return render_template('home/search.html', page_data=page_data, key=key,data_count=data_count)
 
 
-@home.route('/play/')
-def play():
-    return render_template('home/play.html')
+@home.route('/play/<int:id>')
+def play(id=None):
+    movie=Movie.query.join(
+        Tag
+    ).filter(Tag.id==Movie.tag_id,Movie.id==int(id)).first_or_404()
+
+    return render_template('home/play.html',movie=movie)
