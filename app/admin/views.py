@@ -1,6 +1,7 @@
 from . import admin
 from flask import render_template, redirect, url_for, flash, session, request,abort
-from app.admin.fomrs import LoginForm, TagForm, MovieForm, PreviewForm, PwdForm,Authform,Roleform,Adminform
+from app.admin.forms import LoginForm, TagForm, MovieForm, PreviewForm, PwdForm,Authform,Roleform,Adminform
+
 from app.models import Admin, Tag, Movie, Preview, User, Comment, Moviecol, Oplog, Adminlog, Userlog,Auth,Role
 from functools import wraps
 from app import db, app
@@ -152,7 +153,7 @@ def tag_add():
 @admin_login_req
 @admin_auth
 def tag_edit(id, page=None):
-    form = TagForm()  # 点了提交才有数据传过来了，get请求是没有数据
+    form = TagForm()  # 点了提交才有数据传过来了，get请求是没有数据,所以需要借用到tag
     tag = Tag.query.get_or_404(id)
     if form.validate_on_submit():
         data = form.data
@@ -284,13 +285,13 @@ def movie_edit(id, page=None):
 
     form.logo.validators = []  # 去掉封面和电影的校验，否则会提示上传数据
     form.url.validators = []  #
+
     if form.validate_on_submit():  # 校验通过时
         data = form.data
         movie_count = Movie.query.filter(Movie.title == data['title'], Movie.id != id).count()
         if movie_count > 1:
             flash('该电影已经存在！', 'err')
             return render_template('admin/movie_edit.html', form=form, movie=movie)
-
         url = form.url.data.filename
         logo = form.logo.data.filename
 

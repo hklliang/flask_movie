@@ -1,5 +1,6 @@
 # coding:utf8
 from flask_wtf import FlaskForm
+#不能用wtforms来导入
 from wtforms import StringField, PasswordField, SubmitField, FileField, TextAreaField, SelectField, SelectMultipleField
 from wtforms.validators import DataRequired, ValidationError,EqualTo
 from app.models import Admin, Tag, Auth,Role
@@ -99,7 +100,7 @@ class MovieForm(FlaskForm):
         validators=[
             DataRequired('请输入简介！')
         ],
-        description='片名',
+        description='简介',
         render_kw=dict(
             class_="form-control",
             row=10

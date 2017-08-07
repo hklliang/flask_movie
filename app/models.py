@@ -34,6 +34,10 @@ class User(db.Model):
     def __repr__(self):
         return "<User %r>" % self.name
 
+    def check_pwd(self,pwd):
+        from werkzeug.security import check_password_hash
+        return check_password_hash(self.pwd,pwd)
+
 
 class Tag(db.Model):
     __tablename__ = "tag"
@@ -93,6 +97,8 @@ class Comment(db.Model):
 
     def __repr__(self):
         return "<Comment %r>" % self.title
+
+
 
 
 class Moviecol(db.Model):
