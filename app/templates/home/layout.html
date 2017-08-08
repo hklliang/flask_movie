@@ -109,7 +109,7 @@
         });
         $('#do_search').click(function(){
             var key = $('#key_movie').val();
-            location.href="{{ url_for('home.search',page=1) }}?key="+key;
+            location.href="{{ url_for('home.search') }}?key="+key;
         })
     });
 
