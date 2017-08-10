@@ -106,7 +106,6 @@ class Moviecol(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     movie_id = db.Column(db.Integer, db.ForeignKey('movie.id'))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-
     addtime = db.Column(db.DateTime, index=True, default=datetime.utcnow)
 
     def __repr__(self):
