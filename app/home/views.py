@@ -377,7 +377,7 @@ def video(id=None,page=None):
         return redirect(url_for('home.video',id=movie.id,page=1))
 
     db.session.commit()
-
+    print(movie.info)
     return render_template('home/video.html',movie=movie,form=form,page_data=page_data,comment_count=comment_count)
 
 @home.route('/tm/',methods=['GET','POST'])#不能少个斜杠

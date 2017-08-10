@@ -19,9 +19,10 @@
             padding-right: 3px;
             padding-left: 3px;
         }
-    .dplayer-comment-setting-type>label{
-        display:inline;
-    }
+
+        .dplayer-comment-setting-type > label {
+            display: inline;
+        }
     </style>
 
 {% endblock %}
@@ -174,7 +175,8 @@
                                 <div class="comment-main">
                                     <header class="comment-header">
                                         <div class="comment-meta">
-                                            <a class="comment-author" href="user.html">{{ v.user.name }}</a>
+                                            <a class="comment-author"
+                                               href="{{ url_for('home.user') }}">{{ v.user.name }}</a>
                                             评论于
                                             <time title="{{ v.addtime }}" datetime="{{ v.addtime }}">{{ v.addtime }}
                                             </time>
@@ -200,17 +202,20 @@
     <!--播放页面-->
 
     <script>
-        var dp1=new DPlpayer({
-            element:document.getElementById('dplayer1'),
-            video:{
-                url:"{{ url_for('static',filename='uploads/'+movie.url) }}",
+
+        var dpl = new DPlayer({
+            element: document.getElementById('dplayer1'),
+            video: {
+                url: "{{ url_for('static',filename='uploads/'+movie.url) }}",
 
             },
-            danmaku:{
-                id:'{{ movie.id }}',
-                api:"/tm/"
+            danmaku: {
+                id: '{{ movie.id }}',
+                api: "/tm/"
             }
         });
+
+
         var ue = UE.getEditor('input_content', {
             toolbars: [
                 ['fullscreen', 'emotion', 'preview', 'link']
@@ -221,6 +226,7 @@
     </script>
 
     <script>
+
         $(document).ready(function () {
             $('#btn-col').click(function () {
                 var mid ={{ movie.id }};
